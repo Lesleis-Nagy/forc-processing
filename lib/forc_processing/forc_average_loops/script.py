@@ -22,10 +22,6 @@ def read_all_filenames(dirbase):
     print('dirbase= ', dirbase)
     for dirNames, subdirList, fileList in os.walk(dirbase):
         for fname in fileList:
-            # next line to read major loop (hysteresis)
-            #if fname.lower().startswith('my') and fname.lower().endswith('3.loop'):
-            # next line to read FORC loops  in frc format
-            #if fname.lower().startswith('my') and fname.lower().endswith('forc.frc'):
             # next line to read FORC loops  in loop format
             if fname.lower().startswith('my') and fname.lower().endswith('forc.loop'):
                 count += 1
@@ -33,13 +29,13 @@ def read_all_filenames(dirbase):
                 all_files.append(allname)
                 ##print('\t%s' % allname)
     print('{} data files read'.format(count))
-    #print(all_files)
+
     return all_files
-    # os.chdir(dirname)
-    # all_files = [f for f in listdir(dirname) if isfile(join(dirname, f))]
+
 
 def calculate_product(row):
     return row[1]*row[4] + row[2]*row[5] + row[3]*row[6]
+
 
 def get_average_loop(filelist):
 
@@ -56,11 +52,11 @@ def get_average_loop(filelist):
 
     return df_final
 
+
 def get_average_frc(filelist):
     headerlist=['field', 'magnetization']
     dtype={'field':float, 'magnetization':float}
     avgDataFrame = pd.read_csv(filelist[0], sep=',', header=None, skip_blank_lines=False, names=None, dtype=dtype,skipfooter=2)
-
 
     for i in range (1, len(filelist)):
         temppd= pd.read_csv(filelist[i], sep=',', header=None, skip_blank_lines=False, names=None, dtype=dtype, skipfooter=2)
@@ -69,6 +65,7 @@ def get_average_frc(filelist):
     df_final = avgDataFrame / len(filelist)
 
     return df_final
+
 
 def append_new_line(file_name, text_to_append):
     """Append given text as a new line at the end of file"""
@@ -83,16 +80,14 @@ def append_new_line(file_name, text_to_append):
         # Append text at the end of file
         file_object.write(text_to_append)
 
+
 def write_frc_from_loop(filename, df_final):
     fo = open(filename, "w")
-    #for index, row in df_final.head(10).iterrows():
     for index, row in df_final.iterrows():
         if index==0:
             stringline= ('{hfield}'+','+'{mag:.5E}').format(hfield=row[0],mag=row[10])
             append_new_line(filename,stringline)
-            #print(index, row[0], row[5])
         field_new=float(row[0])
-        #print(type(field_new))
         if index>0:
 
             if field_new < field_old:
@@ -108,6 +103,7 @@ def write_frc_from_loop(filename, df_final):
     append_new_line(filename, stringline)
     fo.close()
 
+
 def read_frcs(dirname,elongation,size):
     all_files=[]
     count=0
@@ -120,32 +116,25 @@ def read_frcs(dirname,elongation,size):
                     count += 1
                     allname=join(dirNames,fname)
                     all_files.append(allname)
-                    ##print('\t%s' % allname)
 
-    #os.chdir(dirname)
-    #all_files = [f for f in listdir(dirname) if isfile(join(dirname, f))]
     print('{} data files read'.format(count))
     print(all_files)
 
-
     df0= pd.read_csv(all_files[0], sep=',', usecols=[0] , header=None, names=['field'])
     df0.drop(df0.tail(1).index, inplace=True)
-    #print(df0)
 
     readin = partial(pd.read_csv, sep=',', usecols=[1], header=None, prefix='M')
 
     df = pd.concat(map((readin), all_files), axis=1)
     df.drop(df.tail(1).index, inplace=True)
-    #print(df)
-
 
     dfmean=df.mean(axis=1).to_frame()
     dfmean.columns= ['mean']
     df.columns=all_files
 
     df_final=pd.concat((df0,df,dfmean), axis=1)
-    #print(df_final)
     return df_final
+
 
 def check_frcs(dirname,elongation,size):
     all_files=[]
@@ -158,41 +147,37 @@ def check_frcs(dirname,elongation,size):
                     count+=1
                     allname=join(dirNames,fname)
                     all_files.append(allname)
-                    #print('\t%s' % allname)
     badcount=0
     for file in all_files:
         linecount=len(open(file).readlines())
-        #if linecount != 81003:
         if linecount != 5253:
             badcount += 1
-            #print('{} lines in file{}'.format(linecount, file))
     print('{} files found for {}, {} with {} bad files'.format(count, elongation.replace('*',''),size.replace('*',''), badcount))
 
 
 @app.command()
-def app_main(dirbase:str = ""):
+def app_main(dirbase:str = "", output_file:str = ""):
 
-    home = os.path.expanduser('~/Research')
-    Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-    #filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
+    home = os.path.expanduser('~')
 
     if dirbase == "":
+        Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
         dirbase = filedialog.askdirectory(initialdir=home)
 
-    print('dirbase = ',dirbase)
+    print('dirbase = ', dirbase)
 
-    my_list=read_all_filenames(dirbase)
+    my_list = read_all_filenames(dirbase)
 
     # Either read and average data using the .loop files or .frc
     # remember to chose the correct list of files in read_all_filenames
     df_final=get_average_loop(my_list)
-    #df_final=get_average_frc(my_list)
     print(df_final)
-    outfilefrc= dirbase+ '/average_forcnewloop.frc'
-    #outfileloop = dirbase + '/average_forc.loop'
-    #outfilehyst = dirbase + '/average_hyst.loop'
 
-    #df_final.to_csv(outfilehyst, index=False )
+    if output_file == "":
+        outfilefrc= dirbase+ '/average_forcnewloop.frc'
+    else:
+        outfilefrc = output_file
+
     write_frc_from_loop(outfilefrc,df_final)
     exit()
 
@@ -203,6 +188,6 @@ def main():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    main()
+    app()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

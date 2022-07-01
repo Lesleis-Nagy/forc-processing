@@ -18,29 +18,27 @@ from os.path import isfile, join
 from tkinter import Tk
 from tkinter import filedialog
 
-
-
 def get_file_list():
-    all_files=[]
-    home = os.path.expanduser('~/Research')
+
+    all_files = []
+    home = os.path.expanduser('~')
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
-    #filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     dirbase = filedialog.askdirectory(initialdir=home)
-    counter=0
+    counter = 0
     for file in os.listdir(dirbase):
         if file.lower().endswith('.frc'):
             allname = join(dirbase, file)
             all_files.append(allname)
-            counter+=1
+            counter += 1
 
     print('{} data files read'.format(counter))
     print(all_files)
     return all_files
 
-
 def read_onecol_frc(filename):
+
     # Used to read a single column of Magnetization values in otherwise generic FORC format (assumed Bmin, Bmax, Bstep)
-    df0= pd.read_csv(filename, sep=',', header=None, names=['M'])
+    df0 = pd.read_csv(filename, sep=',', header=None, names=['M'])
     df0['field']= np.nan
     #df0.drop(df0.tail(1).index, inplace=True)
     oldval=float(df0.iloc[-1,0])
@@ -51,9 +49,9 @@ def read_onecol_frc(filename):
         if diffval>0:
             #print('Array size = {}'.format(arraysize))
             break
-        oldval=newval
-        arraysize+=1
-    fieldlist=[]
+        oldval = newval
+        arraysize += 1
+    fieldlist = []
     # The assumed max min and step in mT
     vals=np.arange(2400, -2401, -30)
     for x in vals:
@@ -173,7 +171,6 @@ def get_array_size(filename):
     # a routine just to return the dimension of the FORC major loop
     linecount=0
     arraysize=0
-    #textfile = open("/Users/williams/Research/Low_Res_FORCS/Low_Res_FORCS/average_E500_S90.frc")
     textfile = open(filename)
     lines = textfile.readlines()
     oldval=10.
@@ -186,7 +183,6 @@ def get_array_size(filename):
             x = float(x)
         except:
             pass
-            #print('Not a number')
         else:
             diffval=oldval-x
             if diffval <= 0.:
@@ -263,7 +259,14 @@ def forc_distribution(m, Bb, Ba, sf):
     return rho/np.max(rho)
 
 
-def plot_forc_distribution(Bb, Ba, rho, xlim, ylim, major, minor, shiftedCMap, anotate):
+def plot_forc_distribution(
+        Bb, Ba, rho,
+        xlim, ylim,
+        major, minor,
+        shiftedCMap,
+        anotate,
+        contour_start=0.1, contour_end=1.1, contour_step=0.3):
+
     # Normalizing the distribution
     rhomin = np.min(rho)
 
@@ -272,11 +275,6 @@ def plot_forc_distribution(Bb, Ba, rho, xlim, ylim, major, minor, shiftedCMap, a
             if rho[i][j] < 0.:
                 rho[i][j] /= -rhomin
 
-    # The color map
-
-
-
-    # The rotated axes
     Bc, Bu = np.meshgrid(np.linspace(0., np.max(Bb), 2 * len(Bb)), np.linspace(np.max(Bb), np.min(Bb), 2 * len(Bb)))
 
     # Interpolator function
@@ -292,11 +290,10 @@ def plot_forc_distribution(Bb, Ba, rho, xlim, ylim, major, minor, shiftedCMap, a
     fig, ax = plt.subplots()
 
     # Contour levels
-    #levels = np.arange(0.1, 1.1, 0.1)
-    levels = np.arange(0.1, 1.1, 0.2)
+    levels = np.arange(contour_start, contour_end, contour_step)
     levels = np.concatenate((-1.0 * levels[::-1], levels))
 
-    figure = plt.contourf(Bc, Bu, F, levels=levels, cmap=shiftedCMap, extend='both')
+    figure = plt.contourf(Bc, Bu, F, levels=levels, cmap=shiftedCMap, extend=None)
     contours = plt.contour(Bc, Bu, F, levels=levels, colors='k', linewidths=0.2, extend='both')
 
     # Display parameters
@@ -334,7 +331,6 @@ def plot_forc_distribution(Bb, Ba, rho, xlim, ylim, major, minor, shiftedCMap, a
     clb.ax.set_title(r'$\rho$', y=1.01)
 
     ax.set_aspect('equal')
-    #set origin x,y for anotations
     x=.04
     y=.85
     for names in anotate:
@@ -396,29 +392,25 @@ def shiftedColorMap(cmap, start=0, midpoint=0.5, stop=1.0, name='shiftedcmap'):
     return newcmap
 
 
-
-
-
-
-
 def main():
+
     # Parse arguments
     ap = ArgumentParser(description=
     '''
     Calculate the FORC distribution and plot
     '''
     )
-    ap.add_argument('mfile',
+    ap.add_argument('infile',
+        type=str,
+        help=
+          'The magnetisation file "*.frc" file',
+    )
+    ap.add_argument('outfile',
         type= str,
         help=
-          'The magnetisation file',
+          'The output pdf file',
     )
-    ap.add_argument('filename',
-        type= str,
-        help=
-          'The output label',
-    )
-    ap.add_argument('-l', '--loop', nargs= 3,
+    ap.add_argument('-l', '--loop', nargs=3,
         type= int,
         help=
           'The hysteresis half-loop parameters (units=mT)',
@@ -428,134 +420,100 @@ def main():
         help=
           'The forc distribution smoothing factor',
     )
-    ap.add_argument('--xlim',
+    ap.add_argument('--xlim', nargs= 2,
         type= float,
-        nargs= 2,
-        help= 'The xlim plot parameters',
+        help=
+          'The xlim plot parameters',
     )
-    ap.add_argument('--ylim',
+    ap.add_argument('--ylim', nargs= 2,
         type= float,
-        nargs= 2,
-        help= 'The xlim plot parameters',
+        help=
+          'The xlim plot parameters',
     )
     ap.add_argument('--minor',
         type= float,
-        help= 'The minor ticks forc plot parameter',
+        help=
+          'The minor ticks forc plot parameter',
     )
     ap.add_argument('--major',
         type= float,
-        help= 'The major ticks forc plot parameters',
+        help=
+          'The major ticks forc plot parameters',
     )
     ap.add_argument('--cminor',
         type= float,
-        help= 'The minor ticks curves plot parameter',
+        help=
+          'The minor ticks curves plot parameter',
     )
     ap.add_argument('--cmajor',
         type= float,
-        help= 'The major ticks curves plot parameters',
+        help=
+          'The major ticks curves plot parameters',
+    )
+    ap.add_argument('--contour-start',
+        type= float,
+        default=0.1,
+        help=
+          'The countour levels start value'
+    )
+    ap.add_argument('--contour-end',
+        type= float,
+        default=1.1,
+        help=
+          'The contour levels end value',
+    )
+    ap.add_argument('--contour-step',
+        type= float,
+        default=0.3,
+        help=
+          'The contour levels step value'
+    )
+    ap.add_argument('--annotations',
+        type= str,
+        default= "",
+        help=
+          '\'__\' separated list of annotations'
     )
 
-    args  = ap.parse_args()
+    args = ap.parse_args()
 
-
-    all_files=get_file_list()
     shiftedCMap = shiftedColorMap(RdBu_r, midpoint=(0.5))
 
-    for file in all_files:
-        print('file = {}'.format(file))
-        outfile=os.path.splitext(file)[0]+"forc.pdf"
-        anotate1=""
-        anotate2=""
-        dirname=os.path.dirname(file)
-        base, extension = os.path.splitext(file)
-        if len(all_files)>0:
-            # elong=re.search(r'_E(.*?)_S', file, re.M | re.S).group(1)
-            # size= re.search(r'_S(.*?).frc', file, re.M | re.S).group(1)
+    # Read generic FORC format
+    mforc, Bfield = read_frc(args.infile)
+    Bfield= [i*1000 for i in Bfield]
+    Bfield.reverse()
+    start=max(Bfield)
+    end=min(Bfield)
 
-            #match=re.search(r'E([0-9]{2,3})LonNorm_GM([0-9]{2,3})_Shape([0-9]+\.[0-9]+)\.frc',file)
-            match = re.search(r'E([0-9]{2,3})_S([0-9]{2,3}).frc', file)
-            # if match:
-            #     elong1=int(match.group(1))
-            #     #GM=int(match.group(2))
-            #     #shape=float(match.group(3))
-            #     size=int(match.group(2))
-            #     #print('base, elongation, mean, shape, {}, {}, {}, {} '.format(base,elong1,GM, shape))
-            #     print('base, elongation, size, {}, {}, {}'.format(base, elong1,size))
-            #
-            # # # elong1=int(elong)
-            # # anotate1='Elongation = '+str(elong1)+'%'
-            # # anotate2=''
-            # # #anotate2='Size = '+str(size)
-            #
-            # # anotate1='Compression = '+str(elong1)+'%'
-            # anotate1 = 'Elongation = ' + str(elong1) + '%'
-            # anotate2=''
-            # anotate3 = 'Grain Size = {}'.format(size)
-            # print(anotate3)
-            # output_string=dirname+'/average_S'+str(size)+'_E'+str(elong1)
-            # print('outfile = {}'.format(output_string))
-            # # anotate1='GRAIN SIZE '
-            # # anotate2='Distribution:'
-            # # anotate3='Geometric mean = {}'.format(GM)
-            # # anotate4='Shape factor = {}'.format(shape)
-            # # anotate5=' '
-            # # anotate6='GRAIN ELONGATION'
-            # # anotate7 = 'Distribution:'
-            # # anotate8='Geometric mean = '+str(elong1)+'%'
-            # # anotate9 = 'Shape factor = 1.0'
-            #
-            # # x='S'+str(size).zfill(3)+'.'
-            # # y=str('S'+size+'.')
-            #
-            # # file_part=file.replace(y,x)
-            # # base, extension = os.path.splitext(file_part)
-            #
-            # base, extension = os.path.splitext(file)
+    # process annotations here
+    if args.annotations is not None:
+        annotate = [ann.strip() for ann in args.annotations.split('__')]
+    else:
+        annotate = []
 
-        # Read generic FORC format
-        mforc, Bfield =read_frc(file)
-        Bfield= [i*1000 for i in Bfield]
-        Bfield.reverse()
-        start=max(Bfield)
-        end=min(Bfield)
-        #anotate=[anotate1, anotate2, anotate3, anotate4, anotate5, anotate6, anotate7, anotate8, anotate9]
-        #anotate = [anotate1, anotate2, anotate3]
-        anotate=[""]
-    # Read mforc file from Miguel's format
-    #mforc = np.loadtxt(args.mfile); assert len(mforc) == len(B)
     # The applied field
-        if not Bfield:
-            # Loop parameters
-            start, end, step = args.loop
-            Bfield = np.arange(end, start+abs(step), abs(step))
-
-
-    # Plot the FORC curves
-    #    fig, ax = plot_curves(mforc/np.max(mforc), Bfield, args.cmajor, args.cminor); ax.set_xlim(end, start); fig.savefig('{}.pdf'.format(base)); plt.close()
+    if not Bfield:
+        # Loop parameters
+        start, end, step = args.loop
+        Bfield = np.arange(end, start+abs(step), abs(step))
 
     # Calculate forc distribution
-    #Bb, Ba = np.meshgrid(B, B[::-1])
-        Bb, Ba = np.meshgrid(Bfield, Bfield[::-1])
-        rho = forc_distribution(mforc, Bb, Ba, args.sf)
+    Bb, Ba = np.meshgrid(Bfield, Bfield[::-1])
+    rho = forc_distribution(mforc, Bb, Ba, args.sf)
 
     # Plot the forc distribution
-        output_string ='test'
-        fig, ax = plot_forc_distribution(Bb, Ba, rho, args.xlim, args.ylim, args.major, args.minor,shiftedCMap,anotate); fig.savefig(outfile); plt.close()
+    output_string ='test'
+    fig, ax = plot_forc_distribution(
+        Bb, Ba, rho,
+        args.xlim, args.ylim,
+        args.major, args.minor,
+        shiftedCMap, annotate,
+        contour_start=args.contour_start,
+        contour_end=args.contour_end,
+        contour_step=args.contour_step)
+    fig.savefig(args.outfile); plt.close()
 
-
-
-    #mFORC = np.loadtxt('./mFORC_fram.txt')
-    textfile = "X/Users/williams/Research/Low_Res_FORCS/Low_Res_FORCS/average_E500_S90.frc"
-    #ival=get_array_size("test")
-    #print('END = {}'.format(get_array_size("test")))
-    #myFORC=np.zeros((ival,ival))
-
-    #myFORC=read_frc(textfile)
-
-
-    #myFORC=np.loadtxt('/Users/Williams/Research/FORCTEST/mFORC.txt')
-    #plot(myFORC, ratios=(5., 1., 3.), scale='nocontours', sf=8, tol=0.05)
-    #print(myFORC)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
