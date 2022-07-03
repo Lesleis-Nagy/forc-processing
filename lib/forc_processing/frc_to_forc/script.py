@@ -494,6 +494,7 @@ def main():
 
     # The applied field
     if not Bfield:
+        print("Bfield not set")
         # Loop parameters
         start, end, step = args.loop
         Bfield = np.arange(end, start+abs(step), abs(step))
