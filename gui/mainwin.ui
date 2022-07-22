@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1154</width>
+    <height>823</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0" colspan="2">
+     <widget class="QFrame" name="frame_2">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>270</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="btn_generate">
+         <property name="text">
+          <string>generate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" rowspan="3">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>170</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>530</width>
+           <height>200</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>parameters</string>
+         </property>
+         <widget class="QLineEdit" name="txt_scaling_factor">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>30</y>
+            <width>131</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_scaling_factor">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>30</y>
+            <width>85</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>scaling factor:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_x_limits">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>60</y>
+            <width>81</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>x limits</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_y_limits">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>90</y>
+            <width>81</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>y limits</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_contour">
+          <property name="geometry">
+           <rect>
+            <x>15</x>
+            <y>120</y>
+            <width>47</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>contour</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_x_limits_from">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>60</y>
+            <width>41</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>from:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_x_limits_to">
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>60</y>
+            <width>16</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>to:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_x_limits_to">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>60</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>200.0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_y_limits_from">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>90</y>
+            <width>41</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>from:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_y_limits_from">
+          <property name="geometry">
+           <rect>
+            <x>160</x>
+            <y>90</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>-200.0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_y_limits_to">
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>90</y>
+            <width>16</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>to:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_y_limits_to">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>90</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>200.0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_contour_start">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>120</y>
+            <width>32</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>start:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_contour_start">
+          <property name="geometry">
+           <rect>
+            <x>160</x>
+            <y>120</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0.1</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_x_limits_from">
+          <property name="geometry">
+           <rect>
+            <x>160</x>
+            <y>60</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_contour_step">
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>120</y>
+            <width>30</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>step:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_contour_step">
+          <property name="geometry">
+           <rect>
+            <x>300</x>
+            <y>120</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0.3</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_contour_end">
+          <property name="geometry">
+           <rect>
+            <x>400</x>
+            <y>120</y>
+            <width>27</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>end:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_contour_end">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>120</y>
+            <width>90</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>0.1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="lbl_scaling_factor_2">
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>30</y>
+            <width>85</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>dpi:</string>
+          </property>
+         </widget>
+         <widget class="QLineEdit" name="txt_scaling_factor_2">
+          <property name="geometry">
+           <rect>
+            <x>360</x>
+            <y>30</y>
+            <width>161</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>600</string>
+          </property>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGraphicsView" name="graphics_size_distribution"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QGraphicsView" name="graphics_loops"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="graphics_forcs">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QGraphicsView" name="graphics_elongation_distribution"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1154</width>
+     <height>37</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -39,88 +39,77 @@ def read_onecol_frc(filename):
 
     # Used to read a single column of Magnetization values in otherwise generic FORC format (assumed Bmin, Bmax, Bstep)
     df0 = pd.read_csv(filename, sep=',', header=None, names=['M'])
-    df0['field']= np.nan
-    #df0.drop(df0.tail(1).index, inplace=True)
-    oldval=float(df0.iloc[-1,0])
-    arraysize=0
+    df0['field'] = np.nan
+
+    oldval = float(df0.iloc[-1,0])
+    arraysize = 0
     for idx in reversed(df0.index):
-        newval=float(df0.loc[idx,'M'])
-        diffval=newval-oldval
-        if diffval>0:
-            #print('Array size = {}'.format(arraysize))
+        newval = float(df0.loc[idx, 'M'])
+        diffval = newval-oldval
+        if diffval > 0:
             break
         oldval = newval
         arraysize += 1
     fieldlist = []
     # The assumed max min and step in mT
-    vals=np.arange(2400, -2401, -30)
+    vals = np.arange(2400, -2401, -30)
     for x in vals:
-        y=x-1
-        val1=np.arange(x,2401, 30)
+        y = x-1
+        val1 = np.arange(x,2401, 30)
         fieldlist.extend(val1)
 
     count=0
     for index, row in df0.iterrows():
-        df0.at[count,'field']=fieldlist[count]
-        count+=1
+        df0.at[count, 'field'] = fieldlist[count]
+        count += 1
 
-    #df0['field'] = df0['field'].apply(int)
-    df0=df0[['field','M']]
+    df0 = df0[['field', 'M']]
 
-    #print(df0)
-    #print('length of list = {}'.format(len(fieldlist)))
-    #print('length of frame = {}'.format(len(df0.index)))
     return df0
 
 
 def read_frc(filename):
     # Reads a two-column generic FORC file of field and magnetisation pairs
-    field=[]
+    field = []
     print('filename = {}'.format(filename))
     # grab the file into panda dataframe and chop of the last line (contains 'END')
-    df0= pd.read_csv(filename, sep=',', header=None, names=['field', 'M'])
+    df0 = pd.read_csv(filename, sep=',', header=None, names=['field', 'M'])
     df0.drop(df0.tail(1).index, inplace=True)
 
-    #find the major loop dimension (.i.e.list of field values)
-    oldval=float(df0.iloc[-1,0])
-    arraysize=0
+    #find the major loop dimension (i.e. list of field values)
+    oldval = float(df0.iloc[-1, 0])
+    arraysize = 0
     for idx in reversed(df0.index):
-        newval=float(df0.loc[idx,'field'])
-        diffval=newval-oldval
-        if diffval>0:
-            #print('Array size = {}'.format(arraysize))
+        newval = float(df0.loc[idx, 'field'])
+        diffval = newval - oldval
+        if diffval > 0:
             break
-        oldval=newval
-        arraysize+=1
-        field.append(float(df0.loc[idx,'field']))
+        oldval = newval
+        arraysize += 1
+        field.append(float(df0.loc[idx, 'field']))
 
-    #print('Array size = {}'.format(arraysize))
-    # create an numpy square array of teh correct size for data, and fill with zeros
+    # Create a numpy square array of the correct size for data, and fill with zeros
     myFORC = np.zeros((arraysize, arraysize))
 
     # Iterate though dataframe and populate numpy array
-    oldval=float(df0.iloc[0,0])
-    row_number=-1
-    col_number=arraysize
-    for idx in (df0.index):
-        #get list of 'M' values until new - old 'field' difference is negative
-        newval=float(df0.loc[idx,'field'])
-        M=float(df0.loc[idx,'M'])
-        diffval=newval-oldval
-        #print(diffval)
-        if diffval<0.00001:
-            col_number=(arraysize-row_number-2)
+    oldval = float(df0.iloc[0, 0])
+    row_number = -1
+    col_number = arraysize
+    for idx in df0.index:
+        # Get list of 'M' values until new - old 'field' difference is negative
+        newval = float(df0.loc[idx, 'field'])
+        M = float(df0.loc[idx, 'M'])
+        diffval = newval - oldval
+
+        if diffval < 0.00001:
+            col_number = (arraysize-row_number-2)
             row_number += 1
-            myFORC[row_number,col_number]=M
+            myFORC[row_number, col_number] = M
             oldval = newval
         else:
             col_number += 1
             myFORC[row_number, col_number] = M
-            oldval=newval
-
-    #normalize array
-    #abs_max = np.amax(np.abs(myFORC))
-    #myFORC=myFORC/abs_max
+            oldval = newval
 
     return myFORC, field
 
@@ -220,8 +209,9 @@ def plot_curves(m, B, major, minor):
     ax.yaxis.set_major_formatter(majorFormatter)
     ax.yaxis.set_minor_locator(minorLocator)
 
-    plt.xlabel(r'$B\,(\mathrm{mT})$', fontsize='xx-large')
-    plt.ylabel(r'$m$  ', fontsize='xx-large', rotation='horizontal')
+    fontsize = "medium"
+    plt.xlabel(r'$B\,(\mathrm{mT})$', fontsize=fontsize)
+    plt.ylabel(r'$m$  ', fontsize=fontsize, rotation='horizontal')
 
 
     plt.tight_layout()
@@ -299,8 +289,9 @@ def plot_forc_distribution(
     # Display parameters
     plt.plot([0., np.max(Bb)], [0., 0.], color='black', linewidth=0.5, linestyle='--')
 
-    plt.xlabel(r'$B_c\, (\mathrm{mT})$', fontsize='xx-large')
-    plt.ylabel(r'$B_u\, (\mathrm{mT})$', fontsize='xx-large', rotation='vertical')
+    fontsize="medium"
+    plt.xlabel(r'$B_c\, (\mathrm{mT})$', fontsize=fontsize)
+    plt.ylabel(r'$B_u\, (\mathrm{mT})$', fontsize=fontsize, rotation='vertical')
 
     plt.xlim(xlim[0], xlim[1])
     plt.ylim(ylim[0], ylim[1])
@@ -481,10 +472,10 @@ def main():
 
     # Read generic FORC format
     mforc, Bfield = read_frc(args.infile)
-    Bfield= [i*1000 for i in Bfield]
+    Bfield = [i*1000 for i in Bfield]
     Bfield.reverse()
-    start=max(Bfield)
-    end=min(Bfield)
+    start = max(Bfield)
+    end = min(Bfield)
 
     # process annotations here
     if args.annotations is not None:
@@ -504,7 +495,6 @@ def main():
     rho = forc_distribution(mforc, Bb, Ba, args.sf)
 
     # Plot the forc distribution
-    output_string ='test'
     fig, ax = plot_forc_distribution(
         Bb, Ba, rho,
         args.xlim, args.ylim,
@@ -513,7 +503,14 @@ def main():
         contour_start=args.contour_start,
         contour_end=args.contour_end,
         contour_step=args.contour_step)
-    fig.savefig(args.outfile); plt.close()
+
+    extension = os.path.splitext(args.outfile)
+    if extension[1] == ".png":
+        fig.savefig(args.outfile, dpi=600)
+        plt.close()
+    else:
+        fig.savefig(args.outfile)
+        plt.close()
 
 
 # Press the green button in the gutter to run the script.

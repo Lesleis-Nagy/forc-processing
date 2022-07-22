@@ -16,12 +16,18 @@ setup(
         "numpy",
         "matplotlib",
         "pandas",
-        "scipy"
+        "scipy",
+        "PyQt6",
+        "PyQt6-Charts",
+        "pillow",
+        "pyyaml",
+        "pyqtgraph",
+        "PyOpenGL"
     ],
+    include_package_data=True,
     entry_points="""
     [console_scripts]
-    frc-to-forc=forc_processing.frc_to_forc.script:main
-    forc-distributions=forc_processing.forc_distributions.script:main
-    forc-average-loops=forc_processing.forc_average_loops.script:main
+    forc-gui=forc_processing.gui.main:main
+    forc-cli=forc_processing.cli.main:main
     """
 )

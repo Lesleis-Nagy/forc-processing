@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+frc-to-forc test_data/00000_20C_1p00pc_045nm.frc test_data/00000_20C_1p00pc_045nm.pdf --sf 3 --loop 200 -200 -4 --xlim 0 200 --ylim -200 200 --minor 20 --major 20 --cminor 20 --cmajor 100 --contour-start=0.1 --contour-end=1.3 --contour-step=0.3 --annotations='Prolate (high resolution)__Temperature: 20 °C__Aspect ratio: 1.25__Size:  55nm (ESVD)__Smoothing factor: 3'
