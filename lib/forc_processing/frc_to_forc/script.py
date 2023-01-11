@@ -269,7 +269,7 @@ def plot_forc_distribution(
     levels = np.arange(contour_start, contour_end, contour_step)
     levels = np.concatenate((-1.0 * levels[::-1], levels))
 
-    figure = plt.contourf(Bc, Bu, F, levels=levels, cmap=shiftedCMap, extend=None)
+    figure = plt.contourf(Bc, Bu, F, levels=levels, cmap=shiftedCMap, extend='both')
     contours = plt.contour(Bc, Bu, F, levels=levels, colors='k', linewidths=0.2, extend='both')
 
     # Display parameters
@@ -305,7 +305,7 @@ def plot_forc_distribution(
     labels = [r'-1.0 ($\times${:5.3f})'.format(round(abs(rhomin), 3))]
     labels += ['{:4.1f}'.format(l) for l in levels[1:]]
     clb.set_ticklabels(labels)
-    clb.ax.set_title(r'$\rho$', y=1.01)
+    clb.ax.set_title(r'$\rho$', y=1.01, x=-0.4)
 
     ax.set_aspect('equal')
     x=.04
