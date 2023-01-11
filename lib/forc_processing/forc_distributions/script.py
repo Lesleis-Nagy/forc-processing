@@ -17,35 +17,40 @@ import typer
 
 app = typer.Typer()
 
-fig, ax = plt.subplots(1,1)
+fig, ax = plt.subplots(1, 1)
 
 # code to average all forc files that it finds in a particular directory
 def get_file_list(dirbase=""):
+
     all_files=[]
     all_sizes=[]
     all_elongs=[]
+
     home = os.path.expanduser('~/Research')
+
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
+
     #filename = askopenfilename()  # show an "Open" dialog box and return the path to the selected file
     if dirbase == "":
         dirbase = filedialog.askdirectory(initialdir=home)
+
     counter=0
+
     for file in os.listdir(dirbase):
         if file.lower().endswith('.frc'):
             allname = join(dirbase, file)
             # get size and elongation from filename
-            elong=re.search(r'_E(.*?)_S', file, re.M | re.S).group(1)
-            size= re.search(r'_S(.*?).frc', file, re.M | re.S).group(1)
+            elong = re.search(r'_E(.*?)_S', file, re.M | re.S).group(1)
+            size = re.search(r'_S(.*?).frc', file, re.M | re.S).group(1)
 
             all_files.append(allname)
             all_sizes.append(size)
             all_elongs.append(elong)
-            counter+=1
+            counter += 1
 
     print('{} data files read'.format(counter))
 
     return all_files, all_sizes, all_elongs, dirbase
-
 
 
 # retrun a list of files and grain sizes for a particular elongation value

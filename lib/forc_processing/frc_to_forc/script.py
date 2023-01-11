@@ -55,7 +55,7 @@ def read_onecol_frc(filename):
     vals = np.arange(2400, -2401, -30)
     for x in vals:
         y = x-1
-        val1 = np.arange(x,2401, 30)
+        val1 = np.arange(x, 2401, 30)
         fieldlist.extend(val1)
 
     count=0
@@ -73,43 +73,29 @@ def read_frc(filename):
     field = []
     print('filename = {}'.format(filename))
     # grab the file into panda dataframe and chop of the last line (contains 'END')
-    df0 = pd.read_csv(filename, sep=',', header=None, names=['field', 'M'])
-    df0.drop(df0.tail(1).index, inplace=True)
+    df0 = pd.read_csv(filename)
 
-    #find the major loop dimension (i.e. list of field values)
-    oldval = float(df0.iloc[-1, 0])
-    arraysize = 0
-    for idx in reversed(df0.index):
-        newval = float(df0.loc[idx, 'field'])
-        diffval = newval - oldval
-        if diffval > 0:
-            break
-        oldval = newval
-        arraysize += 1
-        field.append(float(df0.loc[idx, 'field']))
+    # find the major loop dimension (i.e. list of field values on major loop)
+    minor_loops = df0.groupby(df0.Br)
+    minor_loop_lengths = [minor_loop[1].shape[0] for minor_loop in minor_loops]
+    max_minor_loop_length = max(minor_loop_lengths)
 
     # Create a numpy square array of the correct size for data, and fill with zeros
-    myFORC = np.zeros((arraysize, arraysize))
+    myFORC = np.zeros((max_minor_loop_length, max_minor_loop_length))
 
     # Iterate though dataframe and populate numpy array
-    oldval = float(df0.iloc[0, 0])
-    row_number = -1
-    col_number = arraysize
-    for idx in df0.index:
-        # Get list of 'M' values until new - old 'field' difference is negative
-        newval = float(df0.loc[idx, 'field'])
-        M = float(df0.loc[idx, 'M'])
-        diffval = newval - oldval
+    field = None
 
-        if diffval < 0.00001:
-            col_number = (arraysize-row_number-2)
-            row_number += 1
-            myFORC[row_number, col_number] = M
-            oldval = newval
-        else:
-            col_number += 1
-            myFORC[row_number, col_number] = M
-            oldval = newval
+    for i, minor_loop in enumerate(reversed(tuple(minor_loops))):
+        df = minor_loop[1]
+        df = df.iloc[::-1]
+        print(df["M"].tolist())
+        for j, M in enumerate(df["M"].tolist()):
+            myFORC[i][max_minor_loop_length - 1 - j] = M
+
+        # If this is the maximal loop.
+        if minor_loop[1].shape[0] == max_minor_loop_length:
+            field = df["B"].tolist()
 
     return myFORC, field
 
@@ -472,6 +458,7 @@ def main():
 
     # Read generic FORC format
     mforc, Bfield = read_frc(args.infile)
+
     Bfield = [i*1000 for i in Bfield]
     Bfield.reverse()
     start = max(Bfield)

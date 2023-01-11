@@ -6,17 +6,78 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1154</width>
-    <height>823</height>
+    <width>1236</width>
+    <height>1088</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SynthFORC</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="2" column="0" colspan="2">
-     <widget class="QFrame" name="frame_2">
+    <item row="1" column="1">
+     <widget class="QGraphicsView" name="graphics_aratio_distribution"/>
+    </item>
+    <item row="0" column="0">
+     <widget class="QGraphicsView" name="graphics_forcs">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QGraphicsView" name="graphics_loops"/>
+    </item>
+    <item row="2" column="1" rowspan="2">
+     <widget class="QGroupBox" name="grp_aratio_distribution_parameters">
+      <property name="title">
+       <string>elongation distribution parameters</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="2" column="0">
+        <widget class="QLabel" name="lbl_aratio_distr_scale">
+         <property name="text">
+          <string>scale:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lbl_aratio_distr_shape">
+         <property name="text">
+          <string>shape:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lbl_aratio_distr_location">
+         <property name="text">
+          <string>location:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txt_aratio_distr_shape"/>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="txt_aratio_distr_location"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="txt_aratio_distr_scale"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="2">
+     <widget class="QFrame" name="frm_commands">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -38,7 +99,7 @@
         </widget>
        </item>
        <item row="0" column="1" rowspan="3">
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="grp_parameters">
          <property name="minimumSize">
           <size>
            <width>200</width>
@@ -356,21 +417,56 @@
     <item row="1" column="0">
      <widget class="QGraphicsView" name="graphics_size_distribution"/>
     </item>
-    <item row="0" column="1">
-     <widget class="QGraphicsView" name="graphics_loops"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QGraphicsView" name="graphics_forcs">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>16777215</height>
-       </size>
+    <item row="2" column="0" rowspan="2">
+     <widget class="QGroupBox" name="grp_size_distribution_parameters">
+      <property name="title">
+       <string>size distribution parameters</string>
       </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txt_size_distr_shape">
+         <property name="text">
+          <string>1</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="lbl_size_distr_location">
+         <property name="text">
+          <string>location:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="lbl_size_distr_shape">
+         <property name="text">
+          <string>shape:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="lbl_size_distr_scale">
+         <property name="text">
+          <string>scale:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="txt_size_distr_location">
+         <property name="text">
+          <string>40</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="txt_size_distr_scale">
+         <property name="text">
+          <string>11</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGraphicsView" name="graphics_elongation_distribution"/>
     </item>
    </layout>
   </widget>
@@ -379,8 +475,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1154</width>
-     <height>37</height>
+     <width>1236</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>
